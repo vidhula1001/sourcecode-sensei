@@ -1,0 +1,17 @@
+# Ignore the massive virtual environment
+venv/
+.venv/
+env/
+
+# Ignore local Python caching layers
+__pycache__/
+*.pyc
+
+# Ignore the locally generated vector database binaries
+faiss_code_index/
+
+# Ignore your local code testing storage folder
+my_code/
+
+# Ignore VS Code configuration states
+.vscode/

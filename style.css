@@ -1,0 +1,65 @@
+/* Main app background and font styling */
+.stApp {
+    background-color: #0d1117;
+    color: #c9d1d9;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+/* Sidebar customization */
+[data-testid="stSidebar"] {
+    background-color: #161b22 !important;
+    border-right: 2px solid #00ff66;
+}
+
+/* Header neon glow effects */
+.main-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #00ff66;
+    text-shadow: 0 0 10px rgba(0,255,102,0.5), 0 0 20px rgba(0,255,102,0.2);
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+}
+
+/* Metric Card Styling */
+div[data-testid="stMetricValue"] {
+    color: #00ff66 !important;
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+}
+div[data-testid="stMetricLabel"] {
+    color: #8b949e !important;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+}
+
+/* Buttons with matrix neon style */
+div.stButton > button {
+    background-color: #0d1117 !important;
+    color: #00ff66 !important;
+    border: 1px solid #00ff66 !important;
+    box-shadow: 0 0 5px rgba(0,255,102,0.2);
+    transition: all 0.3s ease;
+    font-weight: bold;
+    width: 100%;
+}
+div.stButton > button:hover {
+    background-color: #00ff66 !important;
+    color: #0d1117 !important;
+    box-shadow: 0 0 15px rgba(0,255,102,0.6);
+}
+
+/* Expander styling */
+.streamlit-expanderHeader {
+    background-color: #21262d !important;
+    color: #58a6ff !important;
+    border: 1px solid #30363d !important;
+    border-radius: 4px;
+}
+
+/* File uploader box alignment */
+section[data-testid="stFileUploadDropzone"] {
+    background-color: #21262d !important;
+    border: 1px dashed #00ff66 !important;
+}
