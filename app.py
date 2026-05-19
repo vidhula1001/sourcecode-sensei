@@ -102,10 +102,39 @@ with st.sidebar:
     
     if st.button("+ Start New Chat"):
         if st.session_state.messages:
-            # Safely bundle and archive current session messages to memory
-            session_num = len(st.session_state.all_chats) + 1
-            archive_title = f"📁 Session Archive #{session_num} ({len(st.session_state.messages)} msgs)"
+            # 🤖 BACKGROUND AUTO-NAMING RETRIEVAL ENGINE
+            # Find the very first message the user typed in this chat session
+            first_user_prompt = "New Session"
+            for msg in st.session_state.messages:
+                if msg["role"] == "user":
+                    first_user_prompt = msg["content"]
+                    break
+            
+            # Construct a small background utility prompt for Qwen
+            summary_prompt = (
+                f"You are a utility sub-routine. Summarize the following user programming inquiry into a crisp, "
+                f"2 to 3 word title for a chat history log. Do not include quotes, punctuation, or explanations.\n"
+                f"Inquiry: {first_user_prompt}\n"
+                f"Summary:"
+            )
+            
+            try:
+                # Call Qwen quickly in the background to name the chat semantically
+                raw_summary = llm.invoke(summary_prompt).strip()
+                # Clean up any trailing quotes or backticks the model might add
+                clean_summary = raw_summary.replace('"', '').replace("'", "").replace("`", "")
+                archive_title = f"📁 {clean_summary} ({len(st.session_state.messages)} msgs)"
+            except Exception:
+                # Fallback if the local model lags or hits a timeout
+                session_num = len(st.session_state.all_chats) + 1
+                archive_title = f"📁 Session Archive #{session_num} ({len(st.session_state.messages)} msgs)"
+                
+            # Archive the session under its brand-new semantic title
             st.session_state.all_chats[archive_title] = st.session_state.messages
+            
+        # Flush active screen workspace clear
+        st.session_state.messages = []
+        st.rerun()
             
         # Flush the active screen workspace clear
         st.session_state.messages = []
