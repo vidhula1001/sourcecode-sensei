@@ -51,6 +51,18 @@ def create_vector_db():
     cpp_splitter = RecursiveCharacterTextSplitter.from_language(
         language=Language.CPP, chunk_size=1000, chunk_overlap=100
     )
+    js_splitter = RecursiveCharacterTextSplitter.from_language(
+        language=Language.JS, chunk_size=1000, chunk_overlap=100
+    )
+    ts_splitter = RecursiveCharacterTextSplitter.from_language(
+        language=Language.TS, chunk_size=1000, chunk_overlap=100
+    )
+    java_splitter = RecursiveCharacterTextSplitter.from_language(
+        language=Language.JAVA, chunk_size=1000, chunk_overlap=100
+    )
+    go_splitter = RecursiveCharacterTextSplitter.from_language(
+        language=Language.GO, chunk_size=1000, chunk_overlap=100
+    )
 
     final_chunks = []
     file_count = 0
@@ -60,7 +72,7 @@ def create_vector_db():
         for file in files:
             file_path = os.path.join(root, file)
 
-            if file.endswith(('.py', '.c', '.h', '.cpp')):
+            if file.endswith(('.py', '.c', '.h', '.cpp', '.js', '.ts', '.java', '.go')):
                 try:
                     # Load the raw text so we can track character positions
                     loader = TextLoader(file_path, encoding='utf-8')
@@ -71,8 +83,16 @@ def create_vector_db():
                     # 2. Split with line number tracking
                     if file.endswith('.py'):
                         chunks = split_with_line_numbers(python_splitter, raw_text, base_metadata)
-                    else:  # .c, .h, or .cpp
+                    elif file.endswith(('.c', '.h', '.cpp')):
                         chunks = split_with_line_numbers(cpp_splitter, raw_text, base_metadata)
+                    elif file.endswith('.js'):
+                        chunks = split_with_line_numbers(js_splitter, raw_text, base_metadata)
+                    elif file.endswith('.ts'):
+                        chunks = split_with_line_numbers(ts_splitter, raw_text, base_metadata)
+                    elif file.endswith('.java'):
+                        chunks = split_with_line_numbers(java_splitter, raw_text, base_metadata)
+                    elif file.endswith('.go'):
+                        chunks = split_with_line_numbers(go_splitter, raw_text, base_metadata)
 
                     final_chunks.extend(chunks)
                     file_count += 1

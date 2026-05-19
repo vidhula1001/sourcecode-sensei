@@ -111,7 +111,7 @@ with st.sidebar:
     # ====================================================
     st.markdown("<h3 style='margin-top: 0px; margin-bottom: 10px; font-size: 1.2rem; font-weight: bold;'>Session Controls</h3>", unsafe_allow_html=True)
 
-    if st.button("➕ Start New Chat", key="sidebar_start_new_chat_btn"):
+    if st.button("+ Start New Chat", key="sidebar_start_new_chat_btn"):
         if st.session_state.messages:
             # BACKGROUND SMART AUTO-NAMING
             first_user_prompt = "New Session"
@@ -157,7 +157,7 @@ with st.sidebar:
 
     uploaded_files = st.file_uploader(
         "Add new files to Sensei's memory:",
-        type=["py", "c", "h", "cpp"],
+        type=["py", "c", "h", "cpp", "js", "ts", "java", "go"],
         accept_multiple_files=True,
         key="forced_sidebar_uploader"
     )
@@ -194,6 +194,24 @@ with st.sidebar:
         st.write("")
         st.metric(label="Total Tracked Files", value=len(unique_files))
         st.metric(label="Total Smart Code Chunks", value=total_chunks)
+
+        # Context Window Progress Gauge
+        MAX_CONTEXT_TOKENS = 32768  # qwen2.5-coder:1.5b max context
+        total_chars = sum(len(doc.page_content) for doc in db.docstore._dict.values())
+        estimated_tokens = total_chars // 4
+        usage_pct = min(estimated_tokens / MAX_CONTEXT_TOKENS, 1.0)
+
+        if usage_pct < 0.5:
+            gauge_color = "normal"
+        elif usage_pct < 0.8:
+            gauge_color = "off"
+        else:
+            gauge_color = "inverse"
+
+        st.write("")
+        st.markdown("<span style='color:#8b949e; font-size:0.85rem; font-weight: bold;'>CONTEXT WINDOW USAGE:</span>", unsafe_allow_html=True)
+        st.progress(usage_pct)
+        st.caption(f"~{estimated_tokens:,} / {MAX_CONTEXT_TOKENS:,} tokens used ({usage_pct*100:.1f}%) \n\n {'⚠️ Getting full' if usage_pct > 0.8 else '✅ Healthy'}")
 
         if unique_files:
             st.markdown("<h4 style='margin-top: 10px; font-size: 1.0rem; font-weight: bold;'>Indexed Files:</h4>", unsafe_allow_html=True)
@@ -262,7 +280,7 @@ with st.sidebar:
     # 📍 ORDER POSITION 4: System Settings Pinned to Bottom
     # ====================================================
     st.markdown("<h3 style='margin-top: 0px; margin-bottom: 10px; font-size: 1.2rem; font-weight: bold;'>System Settings</h3>", unsafe_allow_html=True)
-    st.info("🧠 Model: `qwen2.5-coder:1.5b` \n\n🔢 Embeddings: `all-MiniLM-L6-v2` \n\n⚡ Search: `Custom Hybrid (FAISS + BM25)`")
+    st.info("Model: `qwen2.5-coder:1.5b` \n\n Embeddings: `all-MiniLM-L6-v2` \n\n Search: `Custom Hybrid (FAISS + BM25)` \n\n Supported: `py · c · h · cpp · js · ts · java · go`")
 
 st.info("Ask me anything about the code files listed in the sidebar.")
 
